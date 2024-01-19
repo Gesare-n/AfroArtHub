@@ -33,13 +33,17 @@ AfroArtHub is an innovative e-commerce app that serves as an interactive space f
 
 ##Getting started
 
-1.Clone the repository
+1.Clone the repository :git clone https://github.com/Gesare-n/AfroArtHub.git
 
-2.Navigate to the project directory
 
-3.Install dependencies
+2.Navigate to the project directory:cd AfroArtHub
 
-4.Start the application
+
+3.Install dependencies:npm install
+
+
+4.Start the application:npm start
+
 
 
 ##Live Demo
