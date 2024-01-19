@@ -1,61 +1,54 @@
-let searchForm = document.querySelector('.search-form');  //Select the search form element from the Dom
+// Grabbing elements for different ship components
+let shoppingCart = document.querySelector('.shopping-cart');
+let searchForm = document.querySelector('.search-form');
+let loginForm = document.querySelector('.login-form');
+let navbar = document.querySelector('.navbar');
 
-//When the search button is clicked,toggle the active class for the search form
-//and remove the active class from the shopping cart,login form,and navigation bar
-document.querySelector('#search-btn').onclick = () =>{
+// Click events to toggle the 'active' class on different components
+document.querySelector('#search-btn').onclick = () => {
+    // Toggle 'active' class for searchForm and remove 'active' from others
     searchForm.classList.toggle('active');
     shoppingCart.classList.remove('active');
     loginForm.classList.remove('active');
     navbar.classList.remove('active');
 }
-//Select the shopping cart element from the DOM
-let shoppingCart = document.querySelector('.shopping-cart');
 
-//When the cart button is clicked , toggle the active class for the shopping cart
-//and remove the active class from the search form ,shopping cart, and login form
-document.querySelector('#cart-btn').onclick = () =>{
+document.querySelector('#cart-btn').onclick = () => {
+    // Toggle 'active' class for shoppingCart and remove 'active' from others
     shoppingCart.classList.toggle('active');
     searchForm.classList.remove('active');
     loginForm.classList.remove('active');
     navbar.classList.remove('active');
 }
 
-//Select the navigation bar element from the DOM
-let loginForm = document.querySelector('.login-form');
-
-//When the menu button is clicked,toogle the active class for the login form
-//and remove the active class from the search form,shopping cart and navigation bar
-document.querySelector('#login-btn').onclick = () =>{
+document.querySelector('#login-btn').onclick = () => {
+    // Toggle 'active' class for loginForm and remove 'active' from others
     loginForm.classList.toggle('active');
     searchForm.classList.remove('active');
     shoppingCart.classList.remove('active');
     navbar.classList.remove('active');
 }
 
-//Select the navigation bar element from the DOM
-let navbar = document.querySelector('.navbar');
-
-
-//when the menu button is clicked ,toggle the active class for the navigation bar
-//and remove the active class from the search form shopping cart and login form
-document.querySelector('#menu-btn').onclick = () =>{
+document.querySelector('#menu-btn').onclick = () => {
+    // Toggle 'active' class for navbar and remove 'active' from others
     navbar.classList.toggle('active');
     searchForm.classList.remove('active');
     shoppingCart.classList.remove('active');
     loginForm.classList.remove('active');
 }
 
-//When the user scrolls ,remove the active class from the search form,shopping cart,login form and navbar
-window.onscroll = () =>{
+// Close components on scroll
+window.onscroll = () => {
+    // Remove 'active' class from all components on scroll
     searchForm.classList.remove('active');
     shoppingCart.classList.remove('active');
     loginForm.classList.remove('active');
     navbar.classList.remove('active');
 }
 
-//Create a new swiper instance for the product slider with specific options
-var swiper = new Swiper(".product-slider", {
-    loop:true,
+// Initializing Swiper for product slider
+var swiperProduct = new Swiper(".product-slider", {
+    loop: true,
     spaceBetween: 20,
     autoplay: {
         delay: 7500,
@@ -63,21 +56,21 @@ var swiper = new Swiper(".product-slider", {
     },
     centeredSlides: true,
     breakpoints: {
-      0: {
-        slidesPerView: 1,
-      },
-      768: {
-        slidesPerView: 2,
-      },
-      1020: {
-        slidesPerView: 3,
-      },
+        0: {
+            slidesPerView: 1,
+        },
+        768: {
+            slidesPerView: 2,
+        },
+        1020: {
+            slidesPerView: 3,
+        },
     },
 });
 
-//Create a new swiper instance for the review slider with specified options
-var swiper = new Swiper(".review-slider", {
-    loop:true,
+// Initializing Swiper for review slider
+var swiperReview = new Swiper(".review-slider", {
+    loop: true,
     spaceBetween: 20,
     autoplay: {
         delay: 7500,
@@ -85,14 +78,61 @@ var swiper = new Swiper(".review-slider", {
     },
     centeredSlides: true,
     breakpoints: {
-      0: {
-        slidesPerView: 1,
-      },
-      768: {
-        slidesPerView: 2,
-      },
-      1020: {
-        slidesPerView: 3,
-      },
+        0: {
+            slidesPerView: 1,
+        },
+        768: {
+            slidesPerView: 2,
+        },
+        1020: {
+            slidesPerView: 3,
+        },
     },
 });
+
+// Event listener for remove buttons in the shopping cart
+shoppingCart.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-item')) {
+        let id = e.target.dataset.id;
+        removeFromCart(id);
+    }
+});
+
+// Function to remove an item from the cart based on its ID
+function removeFromCart(id) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let updatedCart = cart.filter(item => item.id !== id);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+    // Update the cart display after removal
+    updateCart();
+}
+
+// Function to update the contents of the shopping cart
+function updateCart() {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let cartItems = document.querySelector('.cart-items');
+    let cartTotal = document.querySelector('.cart-total-price');
+    let cartTotalPrice = 0;
+
+    cartItems.innerHTML = '';
+
+    cart.forEach(item => {
+        cartTotalPrice += item.price * item.quantity;
+
+        let cartItem = document.createElement('div');
+        cartItem.classList.add('cart-item');
+        cartItem.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="cart-item-info">
+            <h2>${item.name}</h2>
+            <p>$${item.price} x ${item.quantity}</p>
+          </div>
+          <button class="remove-item" data-id="${item.id}">Remove</button>
+        `;
+
+        cartItems.appendChild(cartItem);
+    });
+
+    cartTotal.textContent = '$' + cartTotalPrice.toFixed(2);
+}
